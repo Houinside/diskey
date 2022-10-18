@@ -1,6 +1,7 @@
 
 ## 编译并运行程序
 ```shell
+cd build 
 meson compile && export DISKEY_DEBUG=1  && ./diskey/diskey
 ```
 

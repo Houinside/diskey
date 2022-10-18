@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <!-- NOTE: to-pixdata has been deprecated since gdk-pixbuf 2.32, as GResource supports embedding modern image formats just as well. Instead of using it, embed a PNG or SVG file in your GResource. -->
+
+  <gresource prefix="/com/proofhelp/diskey">
+
+    <!-- <file preprocess="xml-stripblanks">gtk/menus-common.ui</file>
+    <file preprocess="to-pixdata">pixmaps/gedit-logo.png</file>
+    <file>css/diskey-style.css</file> -->
+    <file>css/diskey-style.css</file>
+    <file>images/diskey-mouse.svg</file>
+    
+    @OS_DEPENDENT_RESOURCE_FILES@
+  </gresource>
+</gresources>

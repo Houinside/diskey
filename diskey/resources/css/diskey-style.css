@@ -1,0 +1,13 @@
+/* 
+image {
+    background-color: red;
+} */
+
+label {
+    background-color: black;
+    opacity: 0.4;
+}
+
+image {
+    padding-left: 10px;
+}

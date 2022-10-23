@@ -17,7 +17,7 @@ libdiskey_deps = [
 
 
 libdiskey_link_args = [
-  '-lX11', '-lXtst', '-std=c99',
+  '-lX11', '-lXtst', '-std=c99', '-lm',
   '-g'  # for valgrind memeory leak check!
 ]
 

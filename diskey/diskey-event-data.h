@@ -23,12 +23,10 @@ typedef struct {
     gboolean filtered;
     gboolean repeated;
 
-    GTimer *timer;
-
     gchar string;
-    gchar key_symbol;
     gchar status;
-    gchar symbol;
+    int key_symbol;
+    char *symbol;
 
     gchar mods_mask;
     keyboardDataModifier modifiers;

@@ -17,5 +17,6 @@ typedef struct _DiskeyWindowPrivate DiskeyWindowPrivate;
 
 void diskey_window_open(GApplication *app);
 void diskey_window_on_image_change(DiskeyWindow *window, MouseButtonData *data);
+void diskey_window_on_label_change(DiskeyWindow *window, gchar *string);
 G_END_DECLS
 #endif

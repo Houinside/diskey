@@ -1,11 +1,18 @@
-
+#include "diskey-input-listener.h"
+#include "diskey-window.h"
 #include "diskey-event-keyboard.h"
 #include "diskey-debug.h"
 
 
-
-gboolean diskey_input_listener_keyboard_event_handler(KeyboardData *data) {
+// KeyData  = namedtuple('KeyData',  ['stamp', 'is_ctrl', 'bk_stop', 'silent', 'spaced', 'markup'])
+gboolean diskey_input_listener_keyboard_event_handler(DiskeyWindow *window, KeyboardData *keyboard_data) {
     // TODO: complete this. remember unref KeyboardData
+    gchar *label_text;
+    // TODO: merge all keyboard data
+    label_text = g_strdup_printf("%s", keyboard_data->symbol);
+    diskey_window_on_label_change(window, label_text);
+    g_free(keyboard_data);
+
     return FALSE;
 }
 
@@ -23,21 +30,6 @@ void diskey_keyboard_event_data_modifier(
     data->modifiers.is_hyper = key_state & Mod3Mask;
     data->modifiers.is_super = key_state & Mod4Mask;
     data->modifiers.is_alt_gr = key_state & Mod5Mask;
-
-    if (data->filtered || !data->pressed) return;
-    
-    KeySym keysym_return;
-    Status status_return;
-
-    GString *buffer = g_string_sized_new(16);
-    if (NoSymbol != Xutf8LookupString(x11_xic, event, buffer->str, buffer->len,
-                                      &keysym_return, &status_return)) {
-        if (32 <= keysym_return && keysym_return <= 126) {
-            data->string = keysym_return;
-        }
-    }
-    data->key_symbol = keysym_return;
-    data->status = status_return;
 }
 
 void diskey_keyboard_event_data_generate(
@@ -54,5 +46,4 @@ void diskey_keyboard_event_data_generate(
         data->repeated = False;
     }
     data->mods_mask = current_event->xkey.state;
-    data->timer = g_timer_new();
 }

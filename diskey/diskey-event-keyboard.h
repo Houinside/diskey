@@ -9,7 +9,7 @@
 
 G_BEGIN_DECLS
 
-gboolean diskey_input_listener_keyboard_event_handler(KeyboardData *data);
+gboolean diskey_input_listener_keyboard_event_handler(DiskeyWindow *window, KeyboardData *keyboard_data);
 void diskey_keyboard_event_data_modifier(
     XIC x11_xic, XEvent *event, KeyboardData *data);
 

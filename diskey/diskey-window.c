@@ -84,11 +84,11 @@ diskey_window_timed_show (DiskeyWindow *window)
       g_source_remove (priv->timer_hide_event_source_id);
       priv->timer_hide_event_source_id = 0;
     }
-  // TODO:  uncomment
+  
   if (!diskey_mouse_button_is_any_pressed (priv->mouse))
     {
       priv->timer_hide_event_source_id
-          = g_timeout_add (2.5 * 1000, diskey_window_on_timeout_main, window);
+          = g_timeout_add (1.5 * 1000, diskey_window_on_timeout_main, window);
     }
 }
 
@@ -117,14 +117,26 @@ diskey_mouse_button_image_update (DiskeyWindow *window)
   pixbuf_previous = gtk_image_get_pixbuf (GTK_IMAGE (win_priv->image));
   gtk_image_set_from_pixbuf (GTK_IMAGE (win_priv->image), pixbuf);
 
-  g_object_unref (pixbuf_previous);
+  if (pixbuf_previous) g_object_unref (pixbuf_previous);
 
   if (!has_updated)
     {
       win_priv->updating_image_src_id = 0;
     }
-
+  g_usleep(0.01*10e6); // TODO: limit the frequency
   return has_updated;
+}
+
+void
+diskey_window_on_label_change(DiskeyWindow *window, gchar *new_string) {
+  DiskeyWindowPrivate *priv;
+  priv = diskey_window_get_instance_private (window);
+
+  const gchar *privious_text = gtk_label_get_text(GTK_LABEL (priv->label));
+  gchar *current_text = g_strdup_printf("%s%s", privious_text, new_string);
+  gtk_label_set_text (GTK_LABEL (priv->label), current_text);
+  g_free(new_string);
+  diskey_window_timed_show(window);
 }
 
 void
@@ -138,7 +150,6 @@ diskey_window_on_image_change (DiskeyWindow *window, MouseButtonData *data)
   diskey_mouse_button_states_update (priv->mouse, data);
 
   // composite pixbuf
-  // TODO: change the is_update_image property.
   priv->updating_image_src_id
       = g_idle_add (diskey_mouse_button_image_update, window);
   diskey_window_timed_show (window);
@@ -246,6 +257,18 @@ diskey_window_class_init (DiskeyWindowClass *klass)
   widget_class->key_press_event = diskey_window_on_key_press_event;
 }
 
+void diskey_window_font_setup (GtkLabel *label) {
+  PangoContext *context;
+  PangoFontDescription *font; //"\[FAMILY-LIST] \[STYLE-OPTIONS] \[SIZE] \[VARIATIONS]",
+
+  context = gtk_widget_get_pango_context (GTK_WIDGET(label));
+  font = pango_font_description_from_string("28");
+  pango_context_set_font_description (context, font);
+
+  pango_font_description_free(font);
+
+}
+
 static void
 diskey_window_ui_setup (DiskeyWindow *window)
 {
@@ -261,7 +284,7 @@ diskey_window_ui_setup (DiskeyWindow *window)
   // 2. image widget for mouse
   win_priv->image = gtk_image_new ();
   gtk_box_pack_start (GTK_BOX (win_priv->box), GTK_WIDGET (win_priv->image),
-                      FALSE, TRUE, 0);
+                      FALSE, TRUE, 20);
   gtk_widget_show (GTK_WIDGET (win_priv->image));
 
   // 3. label widget for text
@@ -269,7 +292,7 @@ diskey_window_ui_setup (DiskeyWindow *window)
   gtk_label_set_ellipsize (GTK_LABEL (win_priv->label), PANGO_ELLIPSIZE_START);
   gtk_label_set_justify (GTK_LABEL (win_priv->label), GTK_JUSTIFY_CENTER);
   gtk_widget_show (GTK_WIDGET (win_priv->label));
-  gtk_label_set_text (win_priv->label, "hello world!");
+  gtk_label_set_text (win_priv->label, "");
   gtk_box_pack_end (GTK_BOX (win_priv->box), GTK_WIDGET (win_priv->label),
                     TRUE, TRUE, 0);
 
@@ -316,6 +339,7 @@ diskey_window_init (DiskeyWindow *window)
   // setup_diskey_window_settings(window);
   diskey_monitor_setup (window);
   diskey_window_ui_setup (window);
+  diskey_window_font_setup(win_priv->label);
   win_priv->mouse = NULL;
   diskey_mouse_button_image_update (window);
   diskey_debug_message (DEBUG_WINDOW, "END");

@@ -60,7 +60,7 @@ diskey_mouse_button_is_any_pressed (DiskeyMouse *mouse)
   DiskeyMousePrivate *priv;
   priv = diskey_mouse_get_instance_private (mouse);
 
-  for (int i = 0; i < priv->button_pixbufs_len; i++)
+  for (guint i = 0; i < priv->button_pixbufs_len; i++)
     {
       state = &g_array_index (priv->button_states, MouseButtonData *, i);
       if (*state == NULL)
@@ -97,6 +97,7 @@ diskey_mouse_composite_pixbuf_by_button_states (DiskeyMouse *mouse)
   gboolean has_updated = FALSE;
   const gdouble mouse_hide_duration = 1;
 
+  // TODO: should use debounce and throttle to limit the frequency
   while (button_pixbufs)
     {
       // NOTE: once find one button_states, composite and then break.
@@ -109,20 +110,23 @@ diskey_mouse_composite_pixbuf_by_button_states (DiskeyMouse *mouse)
       has_updated = TRUE;
 
       delta_time = g_timer_elapsed (priv->timer, NULL) - (*state)->timestamp;
-      if ((*state)->is_pressed && delta_time < 0.03) {
-        alpha = 255;
-      } else {
-        alpha = 127 * MAX(0, 1 - 9*delta_time);
-      }
+      if ((*state)->is_pressed && delta_time < 0.03)
+        {
+          alpha = 255;
+        }
+      else
+        {
+          alpha = 127 * MAX (0, 1 - 9 * delta_time);
+        }
 
       // composite the pixbuf  to priv->pixbuf
       gdk_pixbuf_composite (pixbuf_current, priv->pixbuf, 0, 0, width, height,
-                            0, 0, 1, 1, GDK_INTERP_BILINEAR, alpha);
+                            0, 0, 1, 1, GDK_INTERP_NEAREST, alpha);
 
       // free the state
       if (!(*state)->is_pressed || delta_time >= mouse_hide_duration)
         {
-          g_free(*state);
+          g_free (*state);
           *state = NULL;
         }
 
@@ -250,5 +254,3 @@ diskey_mouse_create_with_color (GdkRGBA *color, int height)
 
   return mouse;
 }
-
-// gboolean diskey_mouse_button_update_image() {};

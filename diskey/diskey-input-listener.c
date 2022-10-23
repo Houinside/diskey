@@ -121,8 +121,6 @@ void diskey_input_listener_mouse_button_process(
     priv = diskey_input_listener_get_instance_private(input_listener);
 
     diskey_mouse_buttton_event_data_generate(event, data);
-    // TODO: change to idle.
-    // g_idle_add(diskey_mouse_button_event_handler, &data);
     diskey_mouse_button_event_handler(priv->window, data);
 
     diskey_debug(DEBUG_INPUT_LISTENER);
@@ -134,7 +132,6 @@ static void diskey_input_listener_keyboard_process(
 
     diskey_debug(DEBUG_INPUT_LISTENER);
     priv = diskey_input_listener_get_instance_private(input_listener);
-    return;
 
     if (event->type == ClientMessage &&
         event->xclient.message_type == priv->x11_custom_atom) {
@@ -159,18 +156,20 @@ static void diskey_input_listener_keyboard_process(
                                                        event)) {
         return;
     }
-    if (event->type != KeyPress && event->type != KeyRelease) return;
 
-    // generate new keyboard event
-    KeyboardData data;
+    // Only handle keypress, then generate new key_data and append it to `keyboard_data`
+    if (event->type != KeyPress) return;
+
+    KeyboardData *key_data = g_new(KeyboardData, 1);
     diskey_keyboard_event_data_generate(event, priv->last_keyboard_event,
-                                        &data);
+                                        key_data);
     diskey_keyboard_event_data_modifier(priv->keyboard_replay_xic, event,
-                                        &data);
-    if (!data.filtered && data.pressed) {
-    }
-
-    g_idle_add(diskey_input_listener_keyboard_event_handler, &data);
+                                        key_data);
+    key_data->key_symbol = XkbKeycodeToKeysym(event->xkey.display, event->xkey.keycode, 0, 0);
+    key_data->symbol = XKeysymToString(key_data->key_symbol);
+    
+    // TODO: remember to free the keyboad data
+    diskey_input_listener_keyboard_event_handler(priv->window, key_data);
     priv->last_keyboard_event = event;
     diskey_debug(DEBUG_INPUT_LISTENER);
 }
@@ -397,6 +396,7 @@ void diskey_input_listener_start(DiskeyInputListner *input_listener) {
             // obtain data and start process data
             XNextEvent(priv->x11_replay_display, &next_event);
 
+            // TODO: optimise, choose only 1 from 2
             diskey_input_listener_keyboard_process(input_listener, &next_event);
             diskey_input_listener_mouse_button_process(input_listener,
                                                        &next_event);

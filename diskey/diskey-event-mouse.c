@@ -1,12 +1,13 @@
 #include "diskey-event-mouse.h"
 
-#include <X11/Xlib.h>
-#include <glib.h>
 #include "diskey-debug.h"
 #include "diskey-mouse.h"
+#include <X11/Xlib.h>
+#include <glib.h>
 
-
-gboolean diskey_mouse_button_event_handler(DiskeyWindow *window, MouseButtonData *data) {
+gboolean
+diskey_mouse_button_event_handler(DiskeyWindow* window, MouseButtonData* data)
+{
     // if (data->is_pressed) {
     //     diskey_debug_message(DEBUG_MOUSE, "Mouse buton %d %s", data->button,
     //                          "pressed");
@@ -21,14 +22,17 @@ gboolean diskey_mouse_button_event_handler(DiskeyWindow *window, MouseButtonData
     if (1 <= data->button & data->button <= 7) {
         diskey_window_on_image_change(window, data);
     } else {
-        if (! data->is_pressed) return FALSE;
+        if (!data->is_pressed)
+            return FALSE;
     }
 
     return FALSE;
 }
 
-void diskey_mouse_buttton_event_data_generate(XButtonEvent *event,
-                                                     MouseButtonData *data) {
+void
+diskey_mouse_buttton_event_data_generate(XButtonEvent* event,
+                                         MouseButtonData* data)
+{
     data->button = event->button;
     data->is_pressed = event->type == ButtonPress;
 }

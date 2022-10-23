@@ -6,7 +6,8 @@
 #include <glib.h>
 
 // data structure for Keyboard
-typedef struct {
+typedef struct
+{
     gboolean is_shift;
     gboolean is_caps_lock;
     gboolean is_ctrl;
@@ -18,7 +19,8 @@ typedef struct {
 
 } keyboardDataModifier;
 
-typedef struct {
+typedef struct
+{
     gboolean pressed;
     gboolean filtered;
     gboolean repeated;
@@ -26,25 +28,37 @@ typedef struct {
     gchar string;
     gchar status;
     int key_symbol;
-    char *symbol;
+    char* symbol;
 
     gchar mods_mask;
     keyboardDataModifier modifiers;
 } KeyboardData;
 
 // data structure for MouseButton
-typedef struct {
+typedef struct
+{
     guint button;
     gboolean is_pressed;
     gdouble timestamp;
 } MouseButtonData;
 
-void x11_wireEvent_to_XKeyEvent(Display *display, xEvent *wire_event,
-                                XKeyEvent *xkey_event);
-void x11_wireEvent_to_XButtonEvent(Display *display, xEvent *wire_event,
-                                   XButtonEvent *xbutton_event);
-void x11_wireEvent_to_XMotionEvent(Display *display, xEvent *wire_event,
-                                   XMotionEvent *xmotion_event);
-void x11_wireEvent_to_XClientEvent(Atom *atom, xEvent *wire_event,
-                                   XClientMessageEvent *xclient_event);
+void
+x11_wireEvent_to_XKeyEvent(Display* display,
+                           xEvent* wire_event,
+                           XKeyEvent* xkey_event);
+
+void
+x11_wireEvent_to_XButtonEvent(Display* display,
+                              xEvent* wire_event,
+                              XButtonEvent* xbutton_event);
+
+void
+x11_wireEvent_to_XMotionEvent(Display* display,
+                              xEvent* wire_event,
+                              XMotionEvent* xmotion_event);
+
+void
+x11_wireEvent_to_XClientEvent(Atom* atom,
+                              xEvent* wire_event,
+                              XClientMessageEvent* xclient_event);
 #endif

@@ -1,8 +1,11 @@
 
 #include "diskey-event-data.h"
 
-void x11_wireEvent_to_XKeyEvent(Display *display, xEvent *wire_event,
-                                XKeyEvent *xkey_event) {
+void
+x11_wireEvent_to_XKeyEvent(Display* display,
+                           xEvent* wire_event,
+                           XKeyEvent* xkey_event)
+{
     // xkey_event->type == (KeyPress, KeyRelease) == (2, 3)
     xkey_event->type = wire_event->u.u.type;
     xkey_event->serial = wire_event->u.u.sequenceNumber;
@@ -21,8 +24,11 @@ void x11_wireEvent_to_XKeyEvent(Display *display, xEvent *wire_event,
     xkey_event->same_screen = wire_event->u.keyButtonPointer.sameScreen;
 }
 
-void x11_wireEvent_to_XButtonEvent(Display *display, xEvent *wire_event,
-                                   XButtonEvent *xbutton_event) {
+void
+x11_wireEvent_to_XButtonEvent(Display* display,
+                              xEvent* wire_event,
+                              XButtonEvent* xbutton_event)
+{
     // xbutton_event->type == (ButtonPress, ButtonRelease) == (4, 5)
     // g_print("type=%d, serial=%lu, send_event=%d state=%");
     xbutton_event->type = wire_event->u.u.type;
@@ -42,8 +48,11 @@ void x11_wireEvent_to_XButtonEvent(Display *display, xEvent *wire_event,
     xbutton_event->same_screen = wire_event->u.keyButtonPointer.sameScreen;
 }
 
-void x11_wireEvent_to_XMotionEvent(Display *display, xEvent *wire_event,
-                                   XMotionEvent *xmotion_event) {
+void
+x11_wireEvent_to_XMotionEvent(Display* display,
+                              xEvent* wire_event,
+                              XMotionEvent* xmotion_event)
+{
     // xmotion_event->type == MotionNotify == 6
     xmotion_event->type = wire_event->u.u.type;
     xmotion_event->serial = wire_event->u.u.sequenceNumber;
@@ -62,8 +71,11 @@ void x11_wireEvent_to_XMotionEvent(Display *display, xEvent *wire_event,
     xmotion_event->same_screen = wire_event->u.keyButtonPointer.sameScreen;
 }
 
-void x11_wireEvent_to_XClientEvent(Atom *atom, xEvent *wire_event,
-                                   XClientMessageEvent *xclient_event) {
+void
+x11_wireEvent_to_XClientEvent(Atom* atom,
+                              xEvent* wire_event,
+                              XClientMessageEvent* xclient_event)
+{
     // xclient_event->type == (FocusIn, FocusOut) == (9, 10)
     xclient_event->type = ClientMessage;
     xclient_event->message_type = atom;

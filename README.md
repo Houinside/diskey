@@ -3,3 +3,6 @@ Diskey is an application that can present the press/release activities of mouse 
 
 # Documentation
 How to build the project, please see [README](doc/README.md)
+
+# Useful documentation
+https://developer.mozilla.org/zh-CN/docs/Web/API/UI_Events/Keyboard_event_key_values

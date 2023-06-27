@@ -1,8 +1,13 @@
 
+# 安装必要的组件
+sudo apt install cmake
+
 ## 编译并运行程序
 ```shell
 cd build 
-meson compile && export DISKEY_DEBUG=1  && ./diskey/diskey
+meson setup ../
+meson compile  # 或者 ninja
+export DISKEY_DEBUG=1  && ./diskey/diskey
 ```
 
 ## 为了查看内存泄露问题 使用 valgrind 工具
